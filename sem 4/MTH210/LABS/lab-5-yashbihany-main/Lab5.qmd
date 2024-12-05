@@ -1,0 +1,157 @@
+---
+title: "MTH210: Lab 5"
+format: 
+  pdf:
+    documentclass: article
+editor: visual
+geometry: margin=1in
+header-includes:
+   - \usepackage{amsmath, amssymb, setspace}
+   - \onehalfspacing
+   - \usepackage{etoolbox} 
+   - \makeatletter 
+   - \preto{\@verbatim}{\topsep=3pt \partopsep=3pt } 
+   - \makeatother
+---
+
+## Ratio-of-Uniforms and Multivariate Normal
+
+1.  Complete the code in the file `RoU.R` that has the code for RoU for the Exponential(1) distribution. This generates $10^4$ samples from Exp$(1)$ distribution (in a way that's different from before).\
+
+2.  Consider using RoU method to sample from $N(\theta, \sigma^2)$, where the pdf is
+
+    $$
+    f(x) = \dfrac{1}{\sqrt{2\pi \sigma^2}} e^{-(x-\theta)^2/(2\sigma^2)}
+    $$
+
+    Note that the set $D$ is
+
+    $$
+    D = \left\{(u,v): 0 \leq u \leq  \left(\dfrac{1}{2\pi\sigma^2} \right)^{1/4}e^{-(v - u \theta)^2/4\sigma^2u^2} \right\}
+    $$
+
+    Go through the example in the notes to find $a$, $b$, $c$, and then draw $10^4$ samples using RoU method.
+
+3.  Run the code in `RoURegion.R` to visualize the RoU region for Exp(1) and $N(\theta, \sigma^2)$. The code is complete, but carefully understand all the steps.
+
+    a.  Change the values of $\theta$ and $\sigma^2$ to see what the shape turns out to be.
+
+    b.  For a fixed value of $\sigma^2$, what do you think will happen to the efficiency of the RoU algorithm as $\theta$ increases?
+
+4.  Implement the RoU algorithm for $f(x) = \mathbb{I}(2 < x < 3)\,.$
+
+5.  **Multivariate Normal:** In class we have learned about sampling from the multivariate normal. Suppose $\mu \in \mathbb{R}^p$ and $\Sigma \in \mathbb{R}^{p \times p}$ be a positive-definite matrix, so that we want to draw
+
+    $$
+    X \sim N_p( \mu, \Sigma)\,.
+    $$
+
+    We will consider $p = 2$ and $\mu = (-5 \,\, 10)^T$ and for $|\rho| < 1$
+
+    $$
+    \Sigma = \left( \begin{array}{cc} 1 & \rho \\ \rho & 1 \end{array} \right)\,.
+    $$
+
+    ```{r}
+    # defining mean and variance matrix
+    mu <- c(-5, 10)
+    Sigma <- matrix(c(1, .5, .5, 1), nrow = 2, ncol = 2)
+    ```
+
+    Recall that drawing from this distribution involves first finding the eigenvalue decomposition of $\Sigma$
+
+    $$
+    \Sigma = Q \Lambda Q^{-1}\,,
+    $$
+
+    where $Q$ is the matrix of eigenvectors and $\Lambda$ is the diagonal matrix of eigenvalues $(\lambda_1, \lambda_2, \dots, \lambda_p)$. An eigenvalue decomposition for a matrix can be done using `eigen()` function:
+
+    ```{r}
+    # eigen value decomposition
+    decomp <- eigen(Sigma)
+
+    # eigenvectors
+    decomp$vectors
+
+    # eigenvalues
+    decomp$values
+
+    # Let's check if the decomposition is right
+    # yes it is!!
+    decomp$vectors %*% diag(decomp$values) %*% solve(decomp$vectors)
+    ```
+
+    From this, we can calculate the "square-root" of the matrix
+
+    $$
+    \Sigma^{1/2} = Q \Lambda^{1/2} Q^{-1}\,.
+    $$
+
+    ```{r}
+    # Finding matrix square-root
+    Sig.sq <- decomp$vectors %*% diag(decomp$values^(1/2)) %*% solve(decomp$vectors)
+    ```
+
+    Now, in order to generate observations from $N_p(\mu, \Sigma)$, we obtain $Z = (Z_1, Z_2, \dots, Z_p)^T$ and set
+
+    $$
+    X = \mu + \Sigma^{1/2} Z\,.
+    $$
+
+    ```{r}
+    Z <- rnorm(2)  # Z
+    X = mu + Sig.sq %*% Z
+    X  # one draw from N(mu, Sigma)
+    ```
+
+    Using all of this information, we can now write a function `multinorm(mu, rho, N)` which takes arguments $\mu$, $\rho$, and number of samples $N$, and returns the $N \times 2$ matrix of sampled values.
+
+    ```{r}
+    #| eval = FALSE
+    multinorm <- function(mu, rho, N = 5e2)
+    {
+      Sigma <- matrix(c(1, rho, rho, 1), nrow = 2, ncol = 2)
+      ...
+      ...
+      samples <- matrix(0, nrow = N, ncol = 2)
+      for(i in 1:N)
+      {
+        .....
+        samples[i, ] <- 
+      }
+    }
+    ```
+
+    ```{r}
+    #| include = FALSE
+    multinorm <- function(mu, rho, N = 5e2)
+    {
+      Sigma <- matrix(c(1, rho, rho, 1), nrow = 2, ncol = 2)
+      # Eigenvalue (spectral) decomposition
+      decomp <- eigen(Sigma)
+      
+      # Finding matrix square-root
+      Sig.sq <- decomp$vectors %*% diag(decomp$values^(1/2)) %*% solve(decomp$vectors)
+      
+      samp <- matrix(0, nrow = N, ncol = 2)
+      for(i in 1:N)
+      {
+        Z <- rnorm(2)
+        samp[i, ] <- mu + Sig.sq %*% Z
+      }
+      return(samp)
+    }
+    ```
+
+    Use your to draw 500 samples from the bivariate normal with $\mu = (-5, 10)^T$ and $\rho = .5$.
+
+    ```{r}
+    #| fig-height: 4
+    #| fig-width: 4
+    samples <- multinorm(mu = c(-5, 10), rho = .5)
+    plot(samples, xlab = "X_1", ylab = "X_2")
+    ```
+
+    a.  Make a similar plot for $\rho = -.9, -.5, 0, .5, .99$.
+
+    b.  Repeat the same where marginal variances are $10$ and $1$ and the off-diagonal elements are $2$.

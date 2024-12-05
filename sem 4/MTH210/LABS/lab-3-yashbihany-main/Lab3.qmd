@@ -1,0 +1,39 @@
+---
+title: "MTH210: Lab 3"
+format: 
+  pdf:
+    documentclass: article
+editor: visual
+geometry: margin=1in
+header-includes:
+   - \usepackage{amsmath, amssymb, setspace}
+   - \onehalfspacing
+   - \usepackage{etoolbox} 
+   - \makeatletter 
+   - \preto{\@verbatim}{\topsep=3pt \partopsep=3pt } 
+   - \makeatother
+---
+
+## Generating Continuous Random Variables
+
+(New code that you write for this assignment can be saved in new `*.R` files and pushed back to the repository.)
+
+1.  The file `BetaAR.R` contains partial code to implement an AR algorithm for a Beta$(4, 3)$ target. Complete the code and analyse the results.\
+
+2.  Write `R` code for Problem 7 in Exercises from Section 4 of the notes.\
+
+3.  The file `circleAR.R` contains partial code to implement the accept-reject sampler to draw from the uniform distribution over the circle. Complete the code.\
+
+4.  Taking inspiration from `circleAR.R`, implement Problem 16 from Section 4 Exercises of the notes.\
+
+5.  Modify the `BetaAR.R` appropriately so that it can implement an AR algorithm for Beta$(2, .1)$.\
+
+6.  Using only $U(0,1)$ draws, draw samples from Gamma$(4,3)$ using Accept-Reject and an exponential proposal. Compare the performance of the sampler using the optimal exponential proposal, versus $\lambda = 2$.\
+
+7.  **Suppose** $Y = \sum_{i=1}^{5} X_i$ **where** $X_i \sim \text{Weibull}(\alpha_i, \lambda)$**. Here density of Weibull**$(\alpha, \lambda)$ **is**
+
+    $$
+    f(x) = \alpha \lambda^{-\alpha} x^{\alpha - 1} e^{-\lambda x^{\alpha} }\,, \qquad x > 0\,.
+    $$
+
+    **Using only** $U(0,1)$ **draws, estimate** $\text{E}(Y^2)$. Assume $\alpha_i = i$ and $\lambda = 5$.
