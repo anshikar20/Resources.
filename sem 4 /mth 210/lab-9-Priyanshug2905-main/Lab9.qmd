@@ -1,0 +1,77 @@
+---
+title: "MTH210: Lab 9"
+format: 
+  pdf:
+    documentclass: article
+editor: visual
+geometry: margin=1in
+header-includes:
+   - \usepackage{amsmath, amssymb, setspace}
+   - \onehalfspacing
+   - \usepackage{etoolbox} 
+   - \makeatletter 
+   - \preto{\@verbatim}{\topsep=3pt \partopsep=3pt } 
+   - \makeatother
+---
+
+## Newton-Raphson and Gradient Ascent
+
+1.  Go through the code in `classDemonstration.R` thoroughly. This contains the code for the location Cauchy example and for the logistic regression example.\
+
+2.  Using both Newton-Raphson and gradient ascent algorithm, maximize objective function
+
+    $$
+    f(x) = \cos(x) \quad x\in [-\pi, 3\pi].
+    $$
+
+3.  Load the `titanic.csv` dataset that is available on my website:
+
+    ```{r}
+    #| cache: true
+    titanic <- read.csv("https://dvats.github.io/assets/titanic.csv")
+    head(titanic)
+    ```
+
+    This dataset has:
+
+    -   `Survived`: whether survived or alive
+
+    -   `X.Intercept`: a column of 1s for the intercept.
+
+    -   `Sexmale`: indicating whether the person is male (1) or female (0)
+
+    -   `Age`: age
+
+    -   `SibSp`: Number of Siblings/Spouses Aboard
+
+    -   `Parch`: Number of Parents/Children Aboard
+
+    -   `Fare`: Cost of the ticket.
+
+    Consider fitting a logistic regression model for the `Survived` variable ($y_i$):
+
+    $$
+    \Pr(Y_i = 1) = \dfrac{e^{x_i^T \beta}}{1 + e^{x_i^T \beta}}
+    $$
+
+    Implement the Newton-Raphson algorithm to estimate the maximum likelihood estimator of $\beta$.\
+
+4.  In James Cameron's 1997 directorial venture, "Titanic", it is often debated that the character of Jack Dawson (played boisterously by Leonardio DiCaprio) could have probably survived if Rose Bukater (played by the ever-brilliant Kate Winslet) had made room for him on the raft. Let's end this debate once and for all.
+
+    Jack Dawson was 20 years old when the tragedy happened. He boarded the ship with no family or spouse and paid 7.5 British pounds for his ticket. Rose Bukater was 19 years old on the tragic day. She boarded the ship with her fianceé (treat this as a spouse) and her mother. She paid 512 British pounds for her ticket.
+
+    Using the Newton-Raphson MLE estimates from below, calculate the estimated probabilities of survival for Jack Dawson and Rose Bukater?
+
+    (You can answer this question even if you haven't seen Titanic. However, if that is true, you must question all of your life's decisions leading up to this moment).
+
+5.  Implement Gradient Ascent algorithm for the above titanic dataset for logistic regression.\
+
+6.  Consider the `motorins` dataset in library `faraway` in R. Do `?motorins` to learn about the dataset.
+
+    ```{r}
+    #| eval: false
+    library(faraway)
+    ?motorins
+    ```
+
+    Consider response variables `Claims` in this datasets, which has the number of insurance claims. Using Exercise 12 in 7.3 of the notes, implement the Poisson regression MLE estimation for this dataset. Use both Newton-Raphson and gradient ascent.

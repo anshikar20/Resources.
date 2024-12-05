@@ -1,0 +1,45 @@
+---
+title: "MTH210: Lab 2"
+format: 
+  pdf:
+    documentclass: article
+editor: visual
+geometry: margin=1in
+header-includes:
+   - \usepackage{amsmath, amssymb, setspace}
+   - \onehalfspacing
+   - \usepackage{etoolbox} 
+   - \makeatletter 
+   - \preto{\@verbatim}{\topsep=3pt \partopsep=3pt } 
+   - \makeatother
+---
+
+## Accept-Reject Method for Discrete Random Variables
+
+1.  The file `BinomAR.R` contains partial code for the implementation of the Accept-Reject method for a Binomial$(n,p)$ problem (as discussed in class). The function `draw_binom()` is left incomplete at some place. Complete the function and run the line
+
+    ```{r}
+    #| eval: false
+    draw_binom(n = 10, p = .25)
+    ```
+
+    If written correctly, the above line will return
+
+    -   an $X \sim \text{Binom}(10, .25)$
+    -   the number of times the algorithm looped
+
+    Change the values of $n$ and $p$ and observe what happens. What happens when $n$ is very large?
+
+2.  Go over the rest of the code in `BinomAR.R` and observe what happens when the simulation is repeated many times. Further, observe how the performance of the upper bound $c$ changes when different Geometric proposals are used. All of this is implemented in the code.
+
+3.  Implement Problem 8 from Section 3.4 in the notes in R. In this problem, the target distribution is the "truncated Poisson distribution'' with pmf:
+
+    $$
+    	\Pr(X = i) = \dfrac{e^{-\lambda} \lambda^i /i!}{ \sum_{j=0}^m e^{-\lambda} \lambda^j /j! } \quad i = 0, 1, 2, \dots, m\,.
+    $$
+
+    What is a reasonable proposal for this target distribution and the respective value of $c$? Implement in R with $m = 30$ and $\lambda = 20$.
+
+4.  Consider a Geometric$(p)$ target distribution. We are aware than a Poisson target distribution cannot be used as a valid proposal distribution for accept-reject. "Verify" this claim by writing code that calculates the bound $c$.\
+    \
+    As it turns out, for the Geometric(p) distribution, it is extremely challenging to find a valid proposal distribution.
